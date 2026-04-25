@@ -1,0 +1,42 @@
+{
+    "name": "whilesmart/eloquent-owner-access",
+    "description": "Pluggable polymorphic owner authorization for Laravel packages with owner_type/owner_id columns. Lets host apps decide who can see and modify owner-scoped records without coupling the underlying packages to a specific tenancy model.",
+    "type": "library",
+    "package-version": "1.0.0",
+    "license": "MIT",
+    "authors": [
+        { "name": "Whilesmart Team" }
+    ],
+    "require": {
+        "php": "^8.2",
+        "laravel/framework": "^11.0|^12.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0|^10.0",
+        "laravel/pint": "^1.22"
+    },
+    "autoload": {
+        "psr-4": {
+            "Whilesmart\\OwnerAccess\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Whilesmart\\OwnerAccess\\OwnerAccessServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/testbench package:test",
+        "pint": ["./vendor/bin/pint"],
+        "pint:test": ["./vendor/bin/pint --test"]
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
