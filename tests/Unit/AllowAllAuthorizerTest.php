@@ -2,11 +2,12 @@
 
 namespace Tests\Unit;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Tests\TestCase;
 use Whilesmart\OwnerAccess\Authorizers\AllowAllAuthorizer;
 use Whilesmart\OwnerAccess\Contracts\OwnerAuthorizer;
+use Whilesmart\OwnerAccess\OwnerAccessServiceProvider;
 
 class AllowAllAuthorizerTest extends TestCase
 {
@@ -41,12 +42,12 @@ class AllowAllAuthorizerTest extends TestCase
     {
         $custom = new class implements OwnerAuthorizer
         {
-            public function authorize(?\Illuminate\Contracts\Auth\Authenticatable $user, string $ownerType, mixed $ownerId): bool
+            public function authorize(?Authenticatable $user, string $ownerType, mixed $ownerId): bool
             {
                 return false;
             }
 
-            public function scope(Builder $query, ?\Illuminate\Contracts\Auth\Authenticatable $user, string $ownerTypeColumn = 'owner_type', string $ownerIdColumn = 'owner_id'): Builder
+            public function scope(Builder $query, ?Authenticatable $user, string $ownerTypeColumn = 'owner_type', string $ownerIdColumn = 'owner_id'): Builder
             {
                 return $query;
             }
@@ -55,14 +56,8 @@ class AllowAllAuthorizerTest extends TestCase
         $this->app->instance(OwnerAuthorizer::class, $custom);
 
         // Re-register the provider; bindIf must be a no-op when bound.
-        (new \Whilesmart\OwnerAccess\OwnerAccessServiceProvider($this->app))->register();
+        (new OwnerAccessServiceProvider($this->app))->register();
 
         $this->assertSame($custom, $this->app->make(OwnerAuthorizer::class));
-    }
-
-    /** Stand-in test model for type hinting; not used for DB. */
-    private function fakeModel(): Model
-    {
-        return new class extends Model {};
     }
 }
